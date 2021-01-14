@@ -16,7 +16,7 @@ const LoginForm = ({ setUser }) => {
         console.log(response.data);
         setUser(response.data.name);
         console.log(response.headers.authorization);
-        window.localStorage.setItem('token', response.headers.authorization);
+        localStorage.setItem('Authorization', response.headers.authorization);
       })
       .catch(err => console.log(err));
   };

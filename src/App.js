@@ -5,6 +5,7 @@ import './App.css';
 
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
+import ProductList from './components/ProductList';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -16,7 +17,9 @@ function App() {
         <Route exact path='/'>
           hello
         </Route>
-        <Route path='/product/list'>product list</Route>
+        <Route path='/product/list'>
+          <ProductList />
+        </Route>
         <Route path='/product/save'>new product</Route>
         <Route path='/login'>
           <LoginForm setUser={setUser} />
