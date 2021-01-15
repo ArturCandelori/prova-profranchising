@@ -10,7 +10,7 @@ const useForm = initialState => {
     setForm({ ...form, [fieldName]: newValue });
   };
 
-  return [form, handleInputChange];
+  return [form, handleInputChange, setForm];
 };
 
 export default useForm;

@@ -18,7 +18,6 @@ const ProductList = () => {
         }
       )
       .then(response => {
-        console.log(response);
         setProducts(response.data.content);
         setTotalPages(response.data.totalPages);
       })

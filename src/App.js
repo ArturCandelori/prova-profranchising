@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import './App.css';
-
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import ProductList from './components/ProductList';
 import AddProductForm from './components/AddProductForm';
+import EditProductForm from './components/EditProductForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,6 +19,9 @@ function App() {
         </Route>
         <Route path='/product/list'>
           <ProductList />
+        </Route>
+        <Route path='/product/save/:id'>
+          <EditProductForm />
         </Route>
         <Route path='/product/save'>
           <AddProductForm />

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 import useForm from './useForm';
 
-const AddProductForm = () => {
-  const [productForm, handleProductInput] = useForm({
+const EditProductForm = () => {
+  const params = useParams();
+
+  const [productForm, handleProductInput, setProductForm] = useForm({
     name: '',
     price: '',
     image: '',
@@ -23,7 +26,7 @@ const AddProductForm = () => {
       .post(
         'https://prova.profranchising.com.br/product/save',
         {
-          id: 0,
+          id: params.id,
           ...productForm,
           ingredients,
         },
@@ -45,9 +48,28 @@ const AddProductForm = () => {
     setIngredients(ingredients.filter(ingredient => ingredient.id !== id));
   };
 
+  useEffect(() => {
+    axios
+      .get('https://prova.profranchising.com.br/product/list', {
+        headers: { Authorization: localStorage.Authorization },
+      })
+      .then(response => {
+        const product = response.data.content.find(p => p.id === params.id);
+
+        setProductForm({
+          name: product.name,
+          price: product.price,
+          image: product.image,
+        });
+
+        setIngredients(product.ingredients);
+      })
+      .catch(err => console.log(err));
+  });
+
   return (
     <div>
-      <h2>Adicionar produto</h2>
+      <h2>Editar produto</h2>
       <form onSubmit={handleSubmitProduct}>
         <input
           placeholder='Nome do produto'
@@ -105,4 +127,4 @@ const AddProductForm = () => {
   );
 };
 
-export default AddProductForm;
+export default EditProductForm;
