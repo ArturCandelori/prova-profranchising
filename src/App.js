@@ -6,6 +6,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import ProductList from './components/ProductList';
+import AddProductForm from './components/AddProductForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,7 +21,9 @@ function App() {
         <Route path='/product/list'>
           <ProductList />
         </Route>
-        <Route path='/product/save'>new product</Route>
+        <Route path='/product/save'>
+          <AddProductForm />
+        </Route>
         <Route path='/login'>
           <LoginForm setUser={setUser} />
         </Route>
