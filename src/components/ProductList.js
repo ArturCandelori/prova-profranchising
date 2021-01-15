@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import api from '../services/api';
 
 import ProductItem from './ProductItem';
 
-const ProductList = () => {
+const ProductList = ({ user }) => {
+  const history = useHistory();
+
   const [products, setProducts] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+
+  if (!user) {
+    history.push('/login');
+  }
 
   useEffect(() => {
     api

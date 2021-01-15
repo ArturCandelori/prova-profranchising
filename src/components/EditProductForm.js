@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import api from '../services/api';
 import useForm from './useForm';
 
-const EditProductForm = () => {
+const EditProductForm = ({ user }) => {
   const params = useParams();
+  const history = useHistory();
+
+  if (!user) {
+    history.push('/login');
+  }
 
   const [productForm, handleProductInput, setProductForm] = useForm({
     name: '',
@@ -32,7 +37,10 @@ const EditProductForm = () => {
         },
         { headers: { Authorization: localStorage.Authorization } }
       )
-      .then(response => console.log(response))
+      .then(response => {
+        console.log(response);
+        history.push('/product/list');
+      })
       .catch(err => console.log(err));
   };
 

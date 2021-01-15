@@ -4,6 +4,11 @@ import * as yup from 'yup';
 import api from '../services/api';
 import useForm from './useForm';
 
+let schema = yup.object().shape({
+  username: yup.string().required('Insira o nome do usuário'),
+  password: yup.string().min(6, 'Senha deve ter pelo menos 6 dígitos'),
+});
+
 const LoginForm = ({ setUser }) => {
   const history = useHistory();
 
@@ -12,8 +17,9 @@ const LoginForm = ({ setUser }) => {
     password: '',
   });
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
     api
       .post('/auth/login', {
         ...loginForm,

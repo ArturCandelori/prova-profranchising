@@ -4,8 +4,12 @@ import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 import useForm from './useForm';
 
-const AddProductForm = () => {
+const AddProductForm = ({ user }) => {
   const history = useHistory();
+
+  if (!user) {
+    history.push('/login');
+  }
 
   const [productForm, handleProductInput] = useForm({
     name: '',
@@ -21,8 +25,6 @@ const AddProductForm = () => {
 
   const handleSubmitProduct = e => {
     e.preventDefault();
-
-    console.log({ id: 0, ...productForm, ingredients });
 
     api
       .post(

@@ -5,34 +5,41 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
 
-import Navbar from './components/Navbar';
+import Header from './components/Header';
 import LoginForm from './components/LoginForm';
 import ProductList from './components/ProductList';
 import AddProductForm from './components/AddProductForm';
 import EditProductForm from './components/EditProductForm';
+import Footer from './components/Footer';
 
 function App() {
   const [user, setUser] = useState(null);
 
   return (
     <Router>
-      <Navbar user={user} />
-      <Switch>
-        <Route path='/product/list'>
-          <ProductList />
-        </Route>
-        <Route path='/product/save/:id'>
-          <EditProductForm />
-        </Route>
-        <Route path='/product/save'>
-          <AddProductForm />
-        </Route>
-        <Route path='/login'>
-          <LoginForm setUser={setUser} />
-        </Route>
-        <Redirect from='/' exact to={user ? '/product/list' : '/login'} />
-      </Switch>
+      <Header user={user} setUser={setUser} />
+      <main className='py-3'>
+        <Container>
+          <Switch>
+            <Route path='/product/list'>
+              <ProductList user={user} />
+            </Route>
+            <Route path='/product/save/:id'>
+              <EditProductForm user={user} />
+            </Route>
+            <Route path='/product/save'>
+              <AddProductForm user={user} />
+            </Route>
+            <Route path='/login'>
+              <LoginForm setUser={setUser} />
+            </Route>
+            <Redirect from='/' exact to={user ? '/product/list' : '/login'} />
+          </Switch>
+        </Container>
+      </main>
+      <Footer />
     </Router>
   );
 }
