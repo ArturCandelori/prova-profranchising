@@ -1,38 +1,45 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Card, Button, ListGroup } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import api from '../services/api';
 
 const ProductItem = ({ product }) => {
-  const history = useHistory();
-
   const handleDelete = () => {
     api
       .delete(`/product/delete/${product.id}`, {
         headers: { Authorization: localStorage.Authorization },
       })
-      .then(response => {
-        console.log(response);
-        history.push('/product/list');
-      })
       .catch(err => console.log(err));
   };
 
   return (
-    <div>
-      <h3>{product.name}</h3>
-      <img src={product.image} width='200' alt='produto' />
-      {product.ingredients.map((ingredient, i) => (
-        <p key={i}>
-          Ingrediente: {ingredient.name} Quantidade: {ingredient.quantity}{' '}
-          Custo: {ingredient.cost}
-        </p>
-      ))}
-      <Link to={`/product/save/${product.id}`}>
-        <button>Editar</button>
-      </Link>
-      <button onClick={handleDelete}>Deletar</button>
-    </div>
+    <Card className='my-2'>
+      <Card.Img variant='top' src={product.image} />
+      <Card.Body>
+        <Card.Title as='h5'>{product.name}</Card.Title>
+        <Card.Subtitle className='mb-2 text-muted'>
+          ${product.price}
+        </Card.Subtitle>
+        <Card.Text>Ingredientes:</Card.Text>
+      </Card.Body>
+      <ListGroup className='list-group-flush'>
+        {product.ingredients.map(ingredient => (
+          <ListGroup.Item key={ingredient.id}>
+            {ingredient.name}, custo: ${ingredient.cost}, qtd:{' '}
+            {ingredient.quantity}g/ml
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+      <Card.Body>
+        <LinkContainer to={`/product/save/${product.id}`}>
+          <Button size='sm'>Editar</Button>
+        </LinkContainer>
+        <Button onClick={handleDelete} variant='danger' size='sm'>
+          Deletar
+        </Button>
+      </Card.Body>
+    </Card>
   );
 };
 

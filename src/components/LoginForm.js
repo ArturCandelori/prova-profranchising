@@ -1,10 +1,10 @@
 import { useHistory } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import * as yup from 'yup';
 
 import api from '../services/api';
 import useForm from './useForm';
-import FormContainer from './FormContainer';
+import { useState } from 'react';
 
 let loginSchema = yup.object().shape({
   username: yup.string().required('Insira o nome do usuário'),
@@ -18,53 +18,65 @@ const LoginForm = ({ setUser }) => {
     username: '',
     password: '',
   });
+  const [validationError, setValidationError] = useState(null);
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-    api
-      .post('/auth/login', {
+    try {
+      await loginSchema.validate(loginForm);
+
+      const response = await api.post('/auth/login', {
         ...loginForm,
-      })
-      .then(response => {
-        setUser(response.data.name);
-        localStorage.setItem('Authorization', response.headers.authorization);
-        history.push('/product/list');
-      })
-      .catch(err => console.log(err));
+      });
+
+      setUser(response.data.name);
+      localStorage.setItem('Authorization', response.headers.authorization);
+      history.push('/product/list');
+    } catch (err) {
+      console.log(err);
+      setValidationError(err.message);
+    }
   };
 
   return (
-    <FormContainer>
-      <h1>Login</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId='username'>
-          <Form.Label>Nome</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Nome do usuário'
-            name='username'
-            value={loginForm.username}
-            onChange={handleLoginChange}
-          ></Form.Control>
-        </Form.Group>
+    <Container>
+      <Row className='justify-content-md-center'>
+        <Col xs={12} md={6}>
+          <h1>Login</h1>
+          {validationError && (
+            <h3 className='text-danger'>{validationError}</h3>
+          )}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId='username'>
+              <Form.Label>Nome</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Nome do usuário'
+                name='username'
+                value={loginForm.username}
+                onChange={handleLoginChange}
+              />
+            </Form.Group>
 
-        <Form.Group controlId='password'>
-          <Form.Label>Senha</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Digite sua senha'
-            name='password'
-            value={loginForm.password}
-            onChange={handleLoginChange}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group controlId='password'>
+              <Form.Label>Senha</Form.Label>
+              <Form.Control
+                type='password'
+                placeholder='Digite sua senha'
+                name='password'
+                value={loginForm.password}
+                onChange={handleLoginChange}
+              />
+            </Form.Group>
 
-        <Button type='submit' variant='primary'>
-          Entrar
-        </Button>
-      </Form>
-    </FormContainer>
+            <Button type='submit' variant='primary'>
+              Entrar
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

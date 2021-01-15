@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Pagination } from 'react-bootstrap';
 
 import api from '../services/api';
 
@@ -24,44 +24,43 @@ const ProductList = ({ user }) => {
         headers: { Authorization: localStorage.Authorization },
       })
       .then(response => {
-        console.log(response);
         setProducts(response.data.content);
         setTotalPages(response.data.totalPages);
       })
       .catch(err => console.log(err));
-  }, [itemsPerPage, pageNumber]);
+  }, [itemsPerPage, pageNumber, products]);
 
   return (
-    <div>
+    <>
       <h2>Lista de produtos</h2>
+      <div className='my-3'>
+        <label htmlFor='teste'>Itens por página:</label>
 
-      <label htmlFor='teste'>Itens por página</label>
-      <select
-        name='numberOfPages'
-        id='teste'
-        onSelect={e => setItemsPerPage(e.target.value)}
-      >
-        <option value='10'>10</option>
-        <option value='20'>20</option>
-        <option value='50'>50</option>
-      </select>
+        <select
+          name='numberOfPages'
+          id='teste'
+          onSelect={e => setItemsPerPage(e.target.value)}
+        >
+          <option value='10'>10</option>
+          <option value='20'>20</option>
+          <option value='50'>50</option>
+        </select>
+      </div>
       <Row>
         {products.map(product => (
           <Col key={product.id} sm={12} md={6} lg={4} xl={3}>
-            <ProductItem key={product.id} product={product} />
+            <ProductItem product={product} />
           </Col>
         ))}
       </Row>
-      <ul>
+      <Pagination>
         {[...Array(totalPages).keys()].map(index => (
-          <li key={index}>
-            <a href='#' onClick={() => setPageNumber(index + 1)}>
-              {index + 1}
-            </a>
-          </li>
+          <Pagination.Item key={index} onClick={() => setPageNumber(index)}>
+            {index + 1}
+          </Pagination.Item>
         ))}
-      </ul>
-    </div>
+      </Pagination>
+    </>
   );
 };
 

@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, ListGroup } from 'react-bootstrap';
+import * as yup from 'yup';
 
 import api from '../services/api';
 import useForm from './useForm';
+
+const productSchema = yup.object().shape({
+  id: yup.number().required(),
+  name: yup.string().required('Preencha todos os campos'),
+  price: yup.string().required('Preencha todos os campos'),
+  image: yup.string().url().required('Preencha todos os campos'),
+  ingredients: yup.array(
+    yup.object().shape({
+      id: yup.number().required(),
+      name: yup.string().required('Preencha todos os campos'),
+      cost: yup.string().required('Preencha todos os campos'),
+      quantity: yup.string().required('Preencha todos os campos'),
+    })
+  ),
+});
 
 const AddProductForm = ({ user }) => {
   const history = useHistory();
@@ -23,12 +39,19 @@ const AddProductForm = ({ user }) => {
     cost: '',
   });
   const [ingredients, setIngredients] = useState([]);
+  const [validationError, setValidationError] = useState(null);
 
-  const handleSubmitProduct = e => {
+  const handleSubmitProduct = async e => {
     e.preventDefault();
 
-    api
-      .post(
+    try {
+      await productSchema.validate({
+        id: 0,
+        ...productForm,
+        ingredients,
+      });
+
+      await api.post(
         '/product/save',
         {
           id: 0,
@@ -36,12 +59,13 @@ const AddProductForm = ({ user }) => {
           ingredients,
         },
         { headers: { Authorization: localStorage.Authorization } }
-      )
-      .then(response => {
-        console.log(response);
-        history.push('/product/list');
-      })
-      .catch(err => console.log(err));
+      );
+
+      history.push('/product/list');
+    } catch (err) {
+      console.log(err);
+      setValidationError(err.message);
+    }
   };
 
   const handleSubmitIngredient = e => {
@@ -58,6 +82,7 @@ const AddProductForm = ({ user }) => {
   return (
     <>
       <Container>
+        {validationError && <h3 className='text-danger'>{validationError}</h3>}
         <Row>
           <Col xs={12} md={6} className='my-3'>
             <h2>Enviar produto</h2>
