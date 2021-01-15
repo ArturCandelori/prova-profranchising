@@ -21,6 +21,12 @@ const productSchema = yup.object().shape({
   ),
 });
 
+const ingredientSchema = yup.object().shape({
+  name: yup.string().required('Preencha todos os campos'),
+  cost: yup.string().required('Preencha todos os campos'),
+  quantity: yup.string().required('Preencha todos os campos'),
+});
+
 const EditProductForm = ({ user }) => {
   const params = useParams();
   const history = useHistory();
@@ -47,7 +53,7 @@ const EditProductForm = ({ user }) => {
 
     try {
       await productSchema.validate({
-        id: 0,
+        id: params.id,
         ...productForm,
         ingredients,
       });
@@ -55,7 +61,7 @@ const EditProductForm = ({ user }) => {
       await api.post(
         '/product/save',
         {
-          id: 0,
+          id: params.id,
           ...productForm,
           ingredients,
         },
@@ -69,12 +75,20 @@ const EditProductForm = ({ user }) => {
     }
   };
 
-  const handleSubmitIngredient = e => {
+  const handleSubmitIngredient = async e => {
     e.preventDefault();
-    setIngredients([
-      ...ingredients,
-      { id: ingredients.length + 1, ...ingredientForm },
-    ]);
+
+    try {
+      await ingredientSchema.validate(ingredientForm);
+
+      setIngredients([
+        ...ingredients,
+        { id: ingredients.length + 1, ...ingredientForm },
+      ]);
+    } catch (err) {
+      console.log(err);
+      setValidationError(err.message);
+    }
   };
 
   const deleteIngredient = i => {

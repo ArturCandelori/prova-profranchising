@@ -21,6 +21,12 @@ const productSchema = yup.object().shape({
   ),
 });
 
+const ingredientSchema = yup.object().shape({
+  name: yup.string().required('Preencha todos os campos'),
+  cost: yup.string().required('Preencha todos os campos'),
+  quantity: yup.string().required('Preencha todos os campos'),
+});
+
 const AddProductForm = ({ user }) => {
   const history = useHistory();
 
@@ -68,9 +74,17 @@ const AddProductForm = ({ user }) => {
     }
   };
 
-  const handleSubmitIngredient = e => {
+  const handleSubmitIngredient = async e => {
     e.preventDefault();
-    setIngredients([...ingredients, { id: 0, ...ingredientForm }]);
+
+    try {
+      await ingredientSchema.validate(ingredientForm);
+
+      setIngredients([...ingredients, { id: 0, ...ingredientForm }]);
+    } catch (err) {
+      console.log(err);
+      setValidationError(err.message);
+    }
   };
 
   const deleteIngredient = i => {
@@ -82,8 +96,10 @@ const AddProductForm = ({ user }) => {
   return (
     <>
       <Container>
-        {validationError && <h3 className='text-danger'>{validationError}</h3>}
         <Row>
+          {validationError && (
+            <h3 className='text-danger'>{validationError}</h3>
+          )}
           <Col xs={12} md={6} className='my-3'>
             <h2>Enviar produto</h2>
             <Form onSubmit={handleSubmitProduct}>
