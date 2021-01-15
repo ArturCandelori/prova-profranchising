@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Form, Button, Container, Row, Col, ListGroup } from 'react-bootstrap';
 
 import api from '../services/api';
 import useForm from './useForm';
@@ -48,70 +49,108 @@ const AddProductForm = ({ user }) => {
     setIngredients([...ingredients, { id: 0, ...ingredientForm }]);
   };
 
-  const deleteIngredient = id => {
-    setIngredients(ingredients.filter(ingredient => ingredient.id !== id));
+  const deleteIngredient = i => {
+    setIngredients(
+      ingredients.filter(ingredient => ingredients.indexOf(ingredient) !== i)
+    );
   };
 
   return (
-    <div>
-      <h2>Adicionar produto</h2>
-      <form onSubmit={handleSubmitProduct}>
-        <input
-          placeholder='Nome do produto'
-          name='name'
-          value={productForm.name}
-          onChange={handleProductInput}
-        />
-        <input
-          type='number'
-          placeholder='Preço'
-          name='price'
-          value={productForm.price}
-          onChange={handleProductInput}
-        />
-        <input
-          placeholder='URL da imagem'
-          name='image'
-          value={productForm.image}
-          onChange={handleProductInput}
-        />
-        <button type='submit'>Enviar</button>
-      </form>
-      Adicionar ingrediente:
-      <form onSubmit={handleSubmitIngredient}>
-        <input
-          placeholder='Nome'
-          name='name'
-          value={ingredientForm.name}
-          onChange={handleIngredientInput}
-        />
-        <input
-          type='number'
-          placeholder='Quantidade'
-          name='quantity'
-          value={ingredientForm.quantity}
-          onChange={handleIngredientInput}
-        />
-        <input
-          type='number'
-          placeholder='Custo'
-          name='cost'
-          value={ingredientForm.cost}
-          onChange={handleIngredientInput}
-        />
-        <button type='submit'>Adicionar</button>
-      </form>
-      Ingredientes:
-      {ingredients.map((ingredient, i) => (
-        <p key={i}>
-          Ingrediente: {ingredient.name} Quantidade: {ingredient.quantity}{' '}
-          Custo: {ingredient.cost}{' '}
-          <button onClick={() => deleteIngredient(ingredient.id)}>
-            Apagar
-          </button>
-        </p>
-      ))}
-    </div>
+    <>
+      <Container>
+        <Row>
+          <Col xs={12} md={6} className='my-3'>
+            <h2>Enviar produto</h2>
+            <Form onSubmit={handleSubmitProduct}>
+              <Form.Group controlId='name'>
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Nome do produto'
+                  name='name'
+                  value={productForm.name}
+                  onChange={handleProductInput}
+                />
+              </Form.Group>
+              <Form.Group controlId='price'>
+                <Form.Label>Preço</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Preço'
+                  name='price'
+                  value={productForm.price}
+                  onChange={handleProductInput}
+                />
+              </Form.Group>
+              <Form.Group controlId='image'>
+                <Form.Label>Imagem</Form.Label>
+                <Form.Control
+                  type='url'
+                  placeholder='URL da imagem'
+                  name='image'
+                  value={productForm.image}
+                  onChange={handleProductInput}
+                />
+              </Form.Group>
+              <Button type='submit'>Enviar</Button>
+            </Form>
+          </Col>
+          <Col xs={12} md={6} className='my-3'>
+            <h2>Adicionar ingrediente:</h2>
+            <Form onSubmit={handleSubmitIngredient}>
+              <Form.Group controlId='nome'>
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Nome do ingrediente'
+                  name='name'
+                  value={ingredientForm.name}
+                  onChange={handleIngredientInput}
+                />
+              </Form.Group>
+              <Form.Group controlId='quantity'>
+                <Form.Label>Quantidade</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Quantidade utilizada'
+                  name='quantity'
+                  value={ingredientForm.quantity}
+                  onChange={handleIngredientInput}
+                />
+              </Form.Group>
+              <Form.Group controlId='cost'>
+                <Form.Label>Custo</Form.Label>
+                <Form.Control
+                  type='number'
+                  placeholder='Custo do ingrediente'
+                  name='cost'
+                  value={ingredientForm.cost}
+                  onChange={handleIngredientInput}
+                />
+              </Form.Group>
+              <Button type='submit'>Adicionar</Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+      <h2>Ingredientes:</h2>
+      <ListGroup>
+        {ingredients.map((ingredient, i) => (
+          <ListGroup.Item key={i}>
+            Ingrediente: {ingredient.name} Quantidade: {ingredient.quantity}{' '}
+            Custo: {ingredient.cost}{' '}
+            <Button
+              className='ml-auto'
+              variant='danger'
+              size='sm'
+              onClick={() => deleteIngredient(i)}
+            >
+              Apagar
+            </Button>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </>
   );
 };
 

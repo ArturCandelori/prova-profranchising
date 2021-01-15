@@ -1,10 +1,12 @@
 import { useHistory } from 'react-router-dom';
+import { Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
 
 import api from '../services/api';
 import useForm from './useForm';
+import FormContainer from './FormContainer';
 
-let schema = yup.object().shape({
+let loginSchema = yup.object().shape({
   username: yup.string().required('Insira o nome do usuário'),
   password: yup.string().min(6, 'Senha deve ter pelo menos 6 dígitos'),
 });
@@ -33,25 +35,36 @@ const LoginForm = ({ setUser }) => {
   };
 
   return (
-    <div>
-      Login
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder='Nome'
-          name='username'
-          value={loginForm.username}
-          onChange={handleLoginChange}
-        />
-        <input
-          type='password'
-          placeholder='Senha'
-          name='password'
-          value={loginForm.password}
-          onChange={handleLoginChange}
-        />
-        <button type='submit'>Entrar</button>
-      </form>
-    </div>
+    <FormContainer>
+      <h1>Login</h1>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId='username'>
+          <Form.Label>Nome</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='Nome do usuário'
+            name='username'
+            value={loginForm.username}
+            onChange={handleLoginChange}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId='password'>
+          <Form.Label>Senha</Form.Label>
+          <Form.Control
+            type='password'
+            placeholder='Digite sua senha'
+            name='password'
+            value={loginForm.password}
+            onChange={handleLoginChange}
+          ></Form.Control>
+        </Form.Group>
+
+        <Button type='submit' variant='primary'>
+          Entrar
+        </Button>
+      </Form>
+    </FormContainer>
   );
 };
 

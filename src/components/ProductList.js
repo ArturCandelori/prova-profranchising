@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Row, Col } from 'react-bootstrap';
 
 import api from '../services/api';
 
@@ -44,10 +45,13 @@ const ProductList = ({ user }) => {
         <option value='20'>20</option>
         <option value='50'>50</option>
       </select>
-      {products.map(product => (
-        <ProductItem key={product.id} product={product} />
-      ))}
-
+      <Row>
+        {products.map(product => (
+          <Col key={product.id} sm={12} md={6} lg={4} xl={3}>
+            <ProductItem key={product.id} product={product} />
+          </Col>
+        ))}
+      </Row>
       <ul>
         {[...Array(totalPages).keys()].map(index => (
           <li key={index}>
