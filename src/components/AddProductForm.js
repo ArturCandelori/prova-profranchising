@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
+import api from '../services/api';
 import useForm from './useForm';
 
 const AddProductForm = () => {
+  const history = useHistory();
+
   const [productForm, handleProductInput] = useForm({
     name: '',
     price: '',
@@ -19,9 +22,11 @@ const AddProductForm = () => {
   const handleSubmitProduct = e => {
     e.preventDefault();
 
-    axios
+    console.log({ id: 0, ...productForm, ingredients });
+
+    api
       .post(
-        'https://prova.profranchising.com.br/product/save',
+        '/product/save',
         {
           id: 0,
           ...productForm,
@@ -29,16 +34,16 @@ const AddProductForm = () => {
         },
         { headers: { Authorization: localStorage.Authorization } }
       )
-      .then(response => console.log(response))
+      .then(response => {
+        console.log(response);
+        history.push('/product/list');
+      })
       .catch(err => console.log(err));
   };
 
   const handleSubmitIngredient = e => {
     e.preventDefault();
-    setIngredients([
-      ...ingredients,
-      { id: ingredients.length + 1, ...ingredientForm },
-    ]);
+    setIngredients([...ingredients, { id: 0, ...ingredientForm }]);
   };
 
   const deleteIngredient = id => {
@@ -56,6 +61,7 @@ const AddProductForm = () => {
           onChange={handleProductInput}
         />
         <input
+          type='number'
           placeholder='Preço'
           name='price'
           value={productForm.price}
@@ -78,12 +84,14 @@ const AddProductForm = () => {
           onChange={handleIngredientInput}
         />
         <input
+          type='number'
           placeholder='Quantidade'
           name='quantity'
           value={ingredientForm.quantity}
           onChange={handleIngredientInput}
         />
         <input
+          type='number'
           placeholder='Custo'
           name='cost'
           value={ingredientForm.cost}
@@ -92,8 +100,8 @@ const AddProductForm = () => {
         <button type='submit'>Adicionar</button>
       </form>
       Ingredientes:
-      {ingredients.map(ingredient => (
-        <p key={ingredient.id}>
+      {ingredients.map((ingredient, i) => (
+        <p key={i}>
           Ingrediente: {ingredient.name} Quantidade: {ingredient.quantity}{' '}
           Custo: {ingredient.cost}{' '}
           <button onClick={() => deleteIngredient(ingredient.id)}>

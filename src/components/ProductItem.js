@@ -1,15 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useHistory } from 'react-router-dom';
+
+import api from '../services/api';
 
 const ProductItem = ({ product }) => {
+  const history = useHistory();
+
   const handleDelete = () => {
-    axios
-      .delete(
-        `https://prova.profranchising.com.br/product/delete/${product.id}`,
-        { headers: { Authorization: localStorage.Authorization } }
-      )
-      .then(response => console.log(response))
+    api
+      .delete(`/product/delete/${product.id}`, {
+        headers: { Authorization: localStorage.Authorization },
+      })
+      .then(response => {
+        console.log(response);
+        history.push('/product/list');
+      })
       .catch(err => console.log(err));
   };
 
@@ -17,8 +22,8 @@ const ProductItem = ({ product }) => {
     <div>
       <h3>{product.name}</h3>
       <img src={product.image} width='200' alt='produto' />
-      {product.ingredients.map(ingredient => (
-        <p>
+      {product.ingredients.map((ingredient, i) => (
+        <p key={i}>
           Ingrediente: {ingredient.name} Quantidade: {ingredient.quantity}{' '}
           Custo: {ingredient.cost}
         </p>

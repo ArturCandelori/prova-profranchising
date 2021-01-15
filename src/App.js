@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
@@ -11,12 +16,9 @@ function App() {
   const [user, setUser] = useState(null);
 
   return (
-    <div className='App'>
+    <Router>
       <Navbar user={user} />
       <Switch>
-        <Route exact path='/'>
-          hello
-        </Route>
         <Route path='/product/list'>
           <ProductList />
         </Route>
@@ -29,8 +31,9 @@ function App() {
         <Route path='/login'>
           <LoginForm setUser={setUser} />
         </Route>
+        <Redirect from='/' exact to={user ? '/product/list' : '/login'} />
       </Switch>
-    </div>
+    </Router>
   );
 }
 

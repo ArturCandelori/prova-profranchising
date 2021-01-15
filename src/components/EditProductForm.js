@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+import api from '../services/api';
 import useForm from './useForm';
 
 const EditProductForm = () => {
@@ -22,9 +22,9 @@ const EditProductForm = () => {
   const handleSubmitProduct = e => {
     e.preventDefault();
 
-    axios
+    api
       .post(
-        'https://prova.profranchising.com.br/product/save',
+        '/product/save',
         {
           id: params.id,
           ...productForm,
@@ -49,8 +49,8 @@ const EditProductForm = () => {
   };
 
   useEffect(() => {
-    axios
-      .get('https://prova.profranchising.com.br/product/list', {
+    api
+      .get('/product/list', {
         headers: { Authorization: localStorage.Authorization },
       })
       .then(response => {

@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import * as yup from 'yup';
+
+import api from '../services/api';
+import useForm from './useForm';
 
 const LoginForm = ({ setUser }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const history = useHistory();
+
+  const [loginForm, handleLoginChange] = useForm({
+    username: '',
+    password: '',
+  });
 
   const handleSubmit = e => {
     e.preventDefault();
-    axios
-      .post('https://prova.profranchising.com.br/auth/login', {
-        username,
-        password,
+    api
+      .post('/auth/login', {
+        ...loginForm,
       })
       .then(response => {
-        console.log(response.data);
         setUser(response.data.name);
-        console.log(response.headers.authorization);
         localStorage.setItem('Authorization', response.headers.authorization);
+        history.push('/product/list');
       })
       .catch(err => console.log(err));
   };
@@ -27,16 +32,18 @@ const LoginForm = ({ setUser }) => {
       <form onSubmit={handleSubmit}>
         <input
           placeholder='Nome'
-          value={username}
-          onChange={e => setUsername(e.target.value)}
+          name='username'
+          value={loginForm.username}
+          onChange={handleLoginChange}
         />
         <input
           type='password'
           placeholder='Senha'
-          value={password}
-          onChange={e => setPassword(e.target.value)}
+          name='password'
+          value={loginForm.password}
+          onChange={handleLoginChange}
         />
-        <button>Entrar</button>
+        <button type='submit'>Entrar</button>
       </form>
     </div>
   );

@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import api from '../services/api';
 
 import ProductItem from './ProductItem';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    axios
-      .get(
-        `https://prova.profranchising.com.br/product/list?page=${itemsPerPage}&size=${pageNumber}`,
-        {
-          headers: { Authorization: localStorage.Authorization },
-        }
-      )
+    api
+      .get(`/product/list?page=${pageNumber}&size=${itemsPerPage}`, {
+        headers: { Authorization: localStorage.Authorization },
+      })
       .then(response => {
+        console.log(response);
         setProducts(response.data.content);
         setTotalPages(response.data.totalPages);
       })
